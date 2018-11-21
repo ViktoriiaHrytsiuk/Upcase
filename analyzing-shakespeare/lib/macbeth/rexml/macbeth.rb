@@ -17,7 +17,6 @@ class Macbeth < BaseParser
     text_length = {}
     speech_elements do |speech_element|
       speech = Speech.new(speech_element)
-      binding.pry
       (text_length[speech.speaker] ||=[]) << speech.line_length
     end
     speaker_speech(text_length)
@@ -46,14 +45,25 @@ class Macbeth < BaseParser
       @act = Act.new(:act_element => act_element)
       @act.scene
       @act.title
+      @act.speech
       result << @act
     end
     act_object(result)
   end
 
+  # TODO find act title for longest speech
   def act_object(result)
-    result
-    binding.pry
+    max_speech_value1 = result.map(&:speech).max_by(&:last)
+
+    result_act_object = nil
+    result.map do |act|
+      result_act_object = act if act.speech == max_speech_value1
+    end
+    act_title(result_act_object)
+  end
+
+  def act_title(act_object)
+    act_object.title + ". " + act_object.scene.title + " " + act_object.speech.first
   end
 
   def scene_objects

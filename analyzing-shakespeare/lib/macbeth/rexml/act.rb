@@ -6,8 +6,8 @@ class Act
   def initialize(options = {})
     @act_element = options[:act_element]
     @title = title
-    @scene = scene_speech
-    @speech = options[:speech]
+    @scene = max_speech_each_scene
+    @speech = max_scene_speech
   end
 
   def grouped_element
@@ -18,12 +18,16 @@ class Act
     grouped_element["TITLE"].first.text
   end
 
-  def scene_speech
-    scene_object = []
+  def max_speech_each_scene
+    scene_speeches = []
     grouped_element["SCENE"].each do |scene_element|
       @scene = Scene.new(:scene_element => scene_element)
-      scene_object << @scene.longest_speech
+      scene_speeches << @scene.longest_speech
     end
-    scene_object
+    scene_speeches
+  end
+
+  def max_scene_speech
+    max_speech_each_scene.max_by(&:last)
   end
 end
