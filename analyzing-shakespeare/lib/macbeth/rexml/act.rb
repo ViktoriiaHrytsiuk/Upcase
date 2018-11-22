@@ -1,13 +1,12 @@
 require_relative 'scene'
 
 class Act
-  attr_accessor :title, :scene, :speech, :act_element
+  attr_accessor :title, :speech, :act_element
 
   def initialize(options = {})
     @act_element = options[:act_element]
     @title = title
-    @scene = max_speech_each_scene
-    @speech = max_scene_speech
+    @speech = max_act_speech
   end
 
   def grouped_element
@@ -18,16 +17,25 @@ class Act
     grouped_element["TITLE"].first.text
   end
 
+  def scene_block(&block)
+    grouped_element["SCENE"].each(&block)
+  end
+
   def max_speech_each_scene
-    scene_speeches = []
-    grouped_element["SCENE"].each do |scene_element|
-      @scene = Scene.new(:scene_element => scene_element)
-      scene_speeches << @scene.longest_speech
+    scene_speeches = {}
+    scene_block do |scene_element|
+      scene = Scene.new(:scene_element => scene_element)
+      scene_title = scene.title
+      scene_speeches[scene_title] = scene.longest_speech
     end
     scene_speeches
   end
 
-  def max_scene_speech
-    max_speech_each_scene.max_by(&:last)
+  def max_act_speech
+    act_speech_title = {}
+    act_speech = max_speech_each_scene.values.max_by(&:last)
+    scene_title = max_speech_each_scene.key(act_speech)
+    act_speech_title[scene_title] = act_speech
+    act_speech_title
   end
 end

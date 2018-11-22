@@ -43,7 +43,6 @@ class Macbeth < BaseParser
     result = []
     act_elements do |act_element|
       @act = Act.new(:act_element => act_element)
-      @act.scene
       @act.title
       @act.speech
       result << @act
@@ -51,19 +50,20 @@ class Macbeth < BaseParser
     act_object(result)
   end
 
-  # TODO find act title for longest speech
   def act_object(result)
-    max_speech_value1 = result.map(&:speech).max_by(&:last)
+    act_result = result.map(&:speech)
 
-    result_act_object = nil
+    speech = act_result.map do |each_hash|
+      each_hash.values.flatten
+    end.max_by(&:last)
+
+    scene_title = act_result.map { |each_hash| each_hash.key(speech) }.compact[0]
+
+    act_title = nil
     result.map do |act|
-      result_act_object = act if act.speech == max_speech_value1
+      act_title = act.title if act.speech.include?(scene_title)
     end
-    act_title(result_act_object)
-  end
-
-  def act_title(act_object)
-    act_object.title + ". " + act_object.scene.title + " " + act_object.speech.first
+    act_title + ". " + scene_title + speech.first
   end
 
   def scene_objects
