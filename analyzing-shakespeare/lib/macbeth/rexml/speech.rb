@@ -1,22 +1,12 @@
-require_relative 'scene'
+require_relative 'abstract_xml_elements'
 
-class Speech
-  attr_reader :speech_element
-
-  def initialize(speech_element)
-    @speech_element = speech_element
-  end
-
-  def grouped_element
-    speech_element.elements.group_by(&:name)
-  end
-
-  def speaker
-    grouped_element["SPEAKER"].first.text
+class Speech < AbstractXmlElements
+  def initialize(options = {})
+    super(xml_element: options[:speech_element])
   end
 
   def lines
-    grouped_element["LINE"]
+    grouped_elements["LINE"]
   end
 
   def line_length
