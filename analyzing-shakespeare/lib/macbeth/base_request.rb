@@ -1,9 +1,9 @@
 require 'net/http'
 
 class BaseRequest
-  MACBETH_URL = URI('http://www.ibiblio.org/xml/examples/shakespeare/macbeth.xml')
+  MACBETH_URL = 'http://www.ibiblio.org/xml/examples/shakespeare/macbeth.xml'
 
-  def macbeth_xml
-    Net::HTTP.get(MACBETH_URL)
+  def self.fetch_xml
+    Net::HTTP.get(URI(MACBETH_URL))
   end
 end
