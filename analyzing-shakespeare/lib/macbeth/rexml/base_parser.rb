@@ -1,9 +1,9 @@
 require 'rexml/document'
 require_relative '../base_request'
 
-class BaseParser < BaseRequest
+class BaseParser
 
   def rexml_document
-    REXML::Document.new(macbeth_xml).root
+    REXML::Document.new(BaseRequest.fetch_xml).root
   end
 end
