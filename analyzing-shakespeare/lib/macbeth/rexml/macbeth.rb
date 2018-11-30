@@ -1,8 +1,6 @@
 require_relative 'abstract_xml_elements'
 require_relative 'base_parser'
 require_relative 'act'
-require_relative 'scene'
-require_relative 'speech'
 
 require 'pry'
 
@@ -10,8 +8,6 @@ class Macbeth < BaseParser
   def speaker_line
     line_count = {}
     speech_elements do |speech_element|
-      binding.pry
-
       speech = Speech.new(speech_element: speech_element)
       speaker_name = speech.xml_block("SPEAKER")
       next if speaker_name == "ALL"
@@ -70,7 +66,6 @@ class Macbeth < BaseParser
     result.map do |act|
       act_title = act.xml_block("TITLE") if act.speech.include?(scene_title)
     end
-    
     act_title + ". " + scene_title + speech.first
   end
 
