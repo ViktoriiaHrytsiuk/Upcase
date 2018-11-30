@@ -10,7 +10,7 @@ class Macbeth < BaseParser
     line_count = {}
     speech_iterator do |speech_element|
       speech = Speech.new(speech_element: speech_element)
-      speaker_name = speech.xml_block("SPEAKER")
+      speaker_name = speech.get_element("SPEAKER")
       next if speaker_name == "ALL"
       line_count[speaker_name] = line_count[speaker_name].to_i + speech.lines.count
     end
@@ -21,7 +21,7 @@ class Macbeth < BaseParser
     line_length = {}
     speech_iterator do |speech_element|
       speech = Speech.new(speech_element: speech_element)
-      speaker_name = speech.xml_block("SPEAKER")
+      speaker_name = speech.get_element("SPEAKER")
       (line_length[speaker_name] ||=[]) << speech.line_length
     end
     line_length
@@ -48,7 +48,7 @@ class Macbeth < BaseParser
     scenes = []
     scene_iterator do |scene_element|
       scene = Scene.new(scene_element: scene_element)
-      scene.xml_block("TITLE")
+      scene.get_element("TITLE")
       scene.longest_line
       scenes << scene
     end
@@ -67,14 +67,14 @@ class Macbeth < BaseParser
   end
 
   def scene_title
-    scene_object.xml_block("TITLE") + scene_object.longest_line.first
+    scene_object.get_element("TITLE") + scene_object.longest_line.first
   end
 
   def act_objects
     result = []
     act_iterator do |act_element|
       act = Act.new(:act_element => act_element)
-      act.xml_block("TITLE")
+      act.get_element("TITLE")
       act.longest_speech
       result << act
     end
@@ -92,7 +92,7 @@ class Macbeth < BaseParser
 
     act_title = nil
     act_objects.map do |act|
-      act_title = act.xml_block("TITLE") if act.longest_speech.include?(scene_title)
+      act_title = act.get_element("TITLE") if act.longest_speech.include?(scene_title)
     end
 
     act = act_title + ". " + scene_title + " "+ speech.first

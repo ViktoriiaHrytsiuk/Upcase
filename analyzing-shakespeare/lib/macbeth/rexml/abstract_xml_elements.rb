@@ -9,7 +9,7 @@ class AbstractXmlElements
     xml_element.elements.group_by(&:name)
   end
 
-  def xml_block(element_name, &block)
+  def get_element(element_name, &block)
     if block_given?
       grouped_elements[element_name].each(&block)
     else
