@@ -21,9 +21,9 @@ class Act < AbstractXmlElements
 
   def longest_speech
     act_speeches = {}
-    scene_longest_speech = max_speech_each_scene.values.max_by(&:last)
-    scene_title = max_speech_each_scene.key(scene_longest_speech)
-    act_speeches[scene_title] = scene_longest_speech
+    scene_longest_line = max_speech_each_scene.values.max_by(&:last)
+    scene_title = max_speech_each_scene.key(scene_longest_line)
+    act_speeches[scene_title] = scene_longest_line
     act_speeches
   end
 end

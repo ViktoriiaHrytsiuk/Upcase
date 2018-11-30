@@ -9,7 +9,7 @@ class Scene < AbstractXmlElements
     @longest_line = longest_line
   end
 
-  def speech_length
+  def speech_line_length
     result = {}
     xml_block("SPEECH") do |speech_element|
       speech = Speech.new(speech_element: speech_element)
@@ -19,9 +19,9 @@ class Scene < AbstractXmlElements
   end
 
   def longest_line
-    speaker_speech = speech_length["title"].map do |each_hash|
+    line_length = speech_line_length["title"].map do |each_hash|
       each_hash.max_by { |text, length| length }
     end
-    speaker_speech.max_by(&:last)
+    line_length.max_by(&:last)
   end
 end
