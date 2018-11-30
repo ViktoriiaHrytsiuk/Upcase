@@ -3,7 +3,7 @@ require_relative '../base_request'
 
 class BaseParser
 
-  def rexml_document
+  def self.rexml_document
     REXML::Document.new(BaseRequest.fetch_xml).root
   end
 end

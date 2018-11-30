@@ -1,12 +1,14 @@
 require_relative 'abstract_xml_elements'
-require_relative 'base_parser'
 require_relative 'act'
+require_relative 'elementable'
 require 'pry'
 
 class Macbeth < BaseParser
+  include Elementable
+
   def speaker_line
     line_count = {}
-    speech_elements do |speech_element|
+    Macbeth.speech_elements do |speech_element|
       speech = Speech.new(speech_element: speech_element)
       speaker_name = speech.xml_block("SPEAKER")
       next if speaker_name == "ALL"
@@ -17,7 +19,7 @@ class Macbeth < BaseParser
 
   def speaker_lines_length
     line_length = {}
-    speech_elements do |speech_element|
+    Macbeth.speech_elements do |speech_element|
       speech = Speech.new(speech_element: speech_element)
       speaker_name = speech.xml_block("SPEAKER")
       (line_length[speaker_name] ||=[]) << speech.line_length
@@ -45,7 +47,7 @@ class Macbeth < BaseParser
 
   def act_iterator
     result = []
-    act_elements do |act_element|
+    Macbeth.act_elements do |act_element|
       act = Act.new(:act_element => act_element)
       act.xml_block("TITLE")
       act.longest_speech
@@ -72,7 +74,7 @@ class Macbeth < BaseParser
 
   def scene_objects
     scenes = []
-    scene_elements do |scene_element|
+    Macbeth.scene_elements do |scene_element|
       scene = Scene.new(scene_element: scene_element)
       scene.xml_block("TITLE")
       scene.longest_line
@@ -94,19 +96,5 @@ class Macbeth < BaseParser
 
   def scene_name(speech_object)
     speech_object.xml_block("TITLE") + speech_object.longest_line.first
-  end
-
-  private
-
-  def act_elements(&block)
-    rexml_document.elements.each("ACT", &block)
-  end
-
-  def scene_elements(&block)
-    rexml_document.elements.each("ACT/SCENE", &block)
-  end
-
-  def speech_elements(&block)
-    rexml_document.elements.each("ACT/SCENE/SPEECH", &block)
   end
 end
