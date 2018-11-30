@@ -11,7 +11,7 @@ class Scene < AbstractXmlElements
 
   def speech_line_length
     result = {}
-    get_element("SPEECH") do |speech_element|
+    fetch_element("SPEECH") do |speech_element|
       speech = Speech.new(speech_element: speech_element)
       (result["title"] ||=[] ) << speech.line_length
     end

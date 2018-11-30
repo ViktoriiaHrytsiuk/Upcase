@@ -9,11 +9,11 @@ class AbstractXmlElements
     xml_element.elements.group_by(&:name)
   end
 
-  def get_element(element_name, &block)
+  def fetch_element(element_name, &block)
     if block_given?
       grouped_elements[element_name].each(&block)
     else
-      grouped_elements[element_name].first.text
+      grouped_elements[element_name]
     end
   end
 end

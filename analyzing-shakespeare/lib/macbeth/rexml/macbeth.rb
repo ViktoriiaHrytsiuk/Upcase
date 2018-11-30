@@ -10,9 +10,10 @@ class Macbeth < BaseParser
     line_count = {}
     speech_iterator do |speech_element|
       speech = Speech.new(speech_element: speech_element)
-      speaker_name = speech.get_element("SPEAKER")
+      speaker_name = speech.fetch_element("SPEAKER").first.text
+      lines_count = speech.fetch_element("LINE").count
       next if speaker_name == "ALL"
-      line_count[speaker_name] = line_count[speaker_name].to_i + speech.lines.count
+      line_count[speaker_name] = line_count[speaker_name].to_i + lines_count
     end
     line_count
   end
@@ -21,7 +22,7 @@ class Macbeth < BaseParser
     line_length = {}
     speech_iterator do |speech_element|
       speech = Speech.new(speech_element: speech_element)
-      speaker_name = speech.get_element("SPEAKER")
+      speaker_name = speech.fetch_element("SPEAKER").first.text
       (line_length[speaker_name] ||=[]) << speech.line_length
     end
     line_length
@@ -48,7 +49,7 @@ class Macbeth < BaseParser
     scenes = []
     scene_iterator do |scene_element|
       scene = Scene.new(scene_element: scene_element)
-      scene.get_element("TITLE")
+      scene.fetch_element("TITLE").first.text
       scene.longest_line
       scenes << scene
     end
@@ -67,14 +68,14 @@ class Macbeth < BaseParser
   end
 
   def scene_title
-    scene_object.get_element("TITLE") + scene_object.longest_line.first
+    scene_object.fetch_element("TITLE").first.text + scene_object.longest_line.first
   end
 
   def act_objects
     result = []
     act_iterator do |act_element|
       act = Act.new(:act_element => act_element)
-      act.get_element("TITLE")
+      act.fetch_element("TITLE").first.text
       act.longest_speech
       result << act
     end
@@ -92,10 +93,9 @@ class Macbeth < BaseParser
 
     act_title = nil
     act_objects.map do |act|
-      act_title = act.get_element("TITLE") if act.longest_speech.include?(scene_title)
+      act_title = act.fetch_element("TITLE").first.text if act.longest_speech.include?(scene_title)
     end
-
-    act = act_title + ". " + scene_title + " "+ speech.first
+    act = act_title + ". " + scene_title + " " + speech.first
   end
 
   private

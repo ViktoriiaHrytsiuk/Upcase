@@ -11,9 +11,9 @@ class Act < AbstractXmlElements
 
   def max_speech_each_scene
     scene_speeches = {}
-    get_element("SCENE") do |scene_element|
+    fetch_element("SCENE") do |scene_element|
       scene = Scene.new(scene_element: scene_element)
-      scene_title = scene.get_element("TITLE")
+      scene_title = scene.fetch_element("TITLE")
       scene_speeches[scene_title] = scene.longest_line
     end
     scene_speeches
