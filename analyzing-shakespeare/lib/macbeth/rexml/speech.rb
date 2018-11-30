@@ -10,11 +10,11 @@ class Speech < AbstractXmlElements
   end
 
   def line_length
-    result = {}
-    lines.inject(result) do |res, line|
+    length = {}
+    lines.inject(length) do |res, line|
       res[line.text] = line.text.length
-      result.merge!(res)
+      length.merge!(res)
     end
-    result
+    length
   end
 end

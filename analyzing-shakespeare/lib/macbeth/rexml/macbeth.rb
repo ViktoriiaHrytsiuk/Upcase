@@ -1,7 +1,6 @@
 require_relative 'abstract_xml_elements'
 require_relative 'base_parser'
 require_relative 'act'
-
 require 'pry'
 
 class Macbeth < BaseParser
@@ -16,14 +15,15 @@ class Macbeth < BaseParser
     line_count
   end
 
-  def longest_line
-    text_length = {}
+  def speaker_lines_length
+    line_length = {}
     speech_elements do |speech_element|
       speech = Speech.new(speech_element: speech_element)
       speaker_name = speech.xml_block("SPEAKER")
-      (text_length[speaker_name] ||=[]) << speech.line_length
+      (line_length[speaker_name] ||=[]) << speech.line_length
     end
-    speaker_speech(text_length)
+    # line_length
+    speaker_speech(line_length)
   end
 
   def speaker_speech(speaker_text)
@@ -48,14 +48,15 @@ class Macbeth < BaseParser
     act_elements do |act_element|
       act = Act.new(:act_element => act_element)
       act.xml_block("TITLE")
-      act.speech
+      act.longest_speech
       result << act
     end
     act_object(result)
   end
 
   def act_object(result)
-    act_result = result.map(&:speech)
+    act_result = result.map(&:longest_speech)
+
     speech = act_result.map do |each_hash|
       each_hash.values.flatten
     end.max_by(&:last)
@@ -64,28 +65,27 @@ class Macbeth < BaseParser
 
     act_title = nil
     result.map do |act|
-      act_title = act.xml_block("TITLE") if act.speech.include?(scene_title)
+      act_title = act.xml_block("TITLE") if act.longest_speech.include?(scene_title)
     end
-    act_title + ". " + scene_title + speech.first
+    act = act_title + ". " + scene_title + " "+ speech.first
   end
 
   def scene_objects
     scenes = []
     scene_elements do |scene_element|
-      @scene = Scene.new(scene_element: scene_element)
-      @scene.title
-      @scene.max_scene_line
-      scenes << @scene
+      scene = Scene.new(scene_element: scene_element)
+      scene.xml_block("TITLE")
+      scene.longest_line
+      scenes << scene
     end
     title(scenes)
   end
 
   def title(scenes)
-    max_speech_value = scenes.map(&:longest_speech).max_by(&:last)
-
+    max_speech_value = scenes.map(&:longest_line).max_by(&:last)
     result_speech_object = nil
     scenes.map do |scene|
-      if scene.longest_speech == max_speech_value
+      if scene.longest_line == max_speech_value
         result_speech_object = scene
       end
     end
@@ -93,7 +93,7 @@ class Macbeth < BaseParser
   end
 
   def scene_name(speech_object)
-    speech_object.title + speech_object.longest_speech.first
+    speech_object.xml_block("TITLE") + speech_object.longest_line.first
   end
 
   private
