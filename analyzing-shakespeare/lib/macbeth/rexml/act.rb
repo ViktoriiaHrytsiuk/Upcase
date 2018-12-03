@@ -2,18 +2,23 @@ require_relative 'abstract_xml_elements'
 require_relative 'scene'
 
 class Act < AbstractXmlElements
-  attr_accessor :longest_speech
+  attr_accessor :longest_speech, :title
 
   def initialize(options = {})
     super(xml_element: options[:act_element])
     @longest_speech = longest_speech
+    @title = title
+  end
+
+  def title
+    fetch_element("TITLE").first.text
   end
 
   def max_speech_each_scene
     scene_speeches = {}
     fetch_element("SCENE") do |scene_element|
       scene = Scene.new(scene_element: scene_element)
-      scene_title = scene.fetch_element("TITLE")
+      scene_title = scene.title
       scene_speeches[scene_title] = scene.longest_line
     end
     scene_speeches

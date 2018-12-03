@@ -6,50 +6,51 @@ require 'pry'
 class Macbeth < BaseParser
   include Elementable
 
-  def speaker_line_count
-    line_count = {}
+  def speech_objects
+    speeches = []
     speech_iterator do |speech_element|
       speech = Speech.new(speech_element: speech_element)
-      speaker_name = speech.fetch_element("SPEAKER").first.text
-      lines_count = speech.fetch_element("LINE").count
+      speech.speaker
+      speech.line_count
+      speech.line_length
+      speeches << speech
+    end
+    speeches
+  end
+
+  def speaker_line_count
+    line_count = {}
+    speech_objects.map do |speech|
+      speaker_name = speech.speaker
       next if speaker_name == "ALL"
+      lines_count = speech.line_count
       line_count[speaker_name] = line_count[speaker_name].to_i + lines_count
     end
     line_count
   end
 
-  def speaker_line_length
-    line_length = {}
-    speech_iterator do |speech_element|
-      speech = Speech.new(speech_element: speech_element)
-      speaker_name = speech.fetch_element("SPEAKER").first.text
-      (line_length[speaker_name] ||=[]) << speech.line_length
+  def speech_object
+    lines = speech_objects.map(&:line_length)
+    longest_line = lines.max_by(&:last)
+
+    speech_objects.map do |speech|
+      return speech if speech.line_length == longest_line
     end
-    line_length
+  end
+
+  def speech_longest_line
+    speech_object.line_length
   end
 
   def speaker_longest_line
-    result = {}
-    speaker_line_length.each do |speaker, line_length|
-      speaker_speech = line_length.map do |each_hash|
-        each_hash.max_by{ |text, length| length }
-      end
-      result[speaker] = speaker_speech.max_by(&:last)
-    end
-    result
-  end
-
-  def longest_line
-    speech_length = speaker_longest_line.values.max_by(&:last)
-    speaker = speaker_longest_line.key(speech_length)
-    speaker + ": " + speech_length.first
+    speech_object.speaker + ": " + longest_line.first
   end
 
   def scene_objects
     scenes = []
     scene_iterator do |scene_element|
       scene = Scene.new(scene_element: scene_element)
-      scene.fetch_element("TITLE").first.text
+      scene.title
       scene.longest_line
       scenes << scene
     end
@@ -57,58 +58,37 @@ class Macbeth < BaseParser
   end
 
   def scene_object
-    max_speech_value = scene_objects.map(&:longest_line).max_by(&:last)
-    result_speech_object = nil
+    longest_line = speech_longest_line
+
     scene_objects.map do |scene|
-      if scene.longest_line == max_speech_value
-        result_speech_object = scene
-      end
+      return scene if scene.longest_line == longest_line
     end
-    result_speech_object
   end
 
   def scene_title
-    scene_object.fetch_element("TITLE").first.text + scene_object.longest_line.first
+    scene_object.title + scene_object.longest_line.first
   end
 
   def act_objects
     result = []
     act_iterator do |act_element|
       act = Act.new(:act_element => act_element)
-      act.fetch_element("TITLE").first.text
+      act.title
       act.longest_speech
       result << act
     end
     result
   end
 
-  def act_title
-    act_result = act_objects.map(&:longest_speech)
+  def act_object
+    longest_line = speech_longest_line
 
-    speech = act_result.map do |each_hash|
-      each_hash.values.flatten
-    end.max_by(&:last)
-
-    scene_title = act_result.map { |each_hash| each_hash.key(speech) }.compact[0]
-
-    act_title = nil
     act_objects.map do |act|
-      act_title = act.fetch_element("TITLE").first.text if act.longest_speech.include?(scene_title)
+      return act if act.longest_speech.has_value?(longest_line)
     end
-    act = act_title + ". " + scene_title + " " + speech.first
   end
 
-  private
-
-  def speech_iterator(&block)
-    Macbeth.speech_elements(&block)
-  end
-
-  def scene_iterator(&block)
-    Macbeth.scene_elements(&block)
-  end
-
-  def act_iterator(&block)
-    Macbeth.act_elements(&block)
+  def act_title
+    act_object.title + act_object.longest_speech.keys.join + act_object.longest_speech.values.flatten.first
   end
 end
