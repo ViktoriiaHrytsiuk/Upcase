@@ -11,7 +11,7 @@ class Scene < AbstractXmlElements
   end
 
   def title
-    fetch_element("TITLE").first.text
+    name("TITLE")
   end
 
   def speech_line_length

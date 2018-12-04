@@ -16,4 +16,8 @@ class AbstractXmlElements
       grouped_elements[element_name]
     end
   end
+
+  def name(element_name)
+    fetch_element(element_name).first.text
+  end
 end

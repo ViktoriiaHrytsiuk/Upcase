@@ -24,6 +24,6 @@ class Speech < AbstractXmlElements
   end
 
   def speaker
-    fetch_element("SPEAKER").first.text
+    name("SPEAKER")
   end
 end

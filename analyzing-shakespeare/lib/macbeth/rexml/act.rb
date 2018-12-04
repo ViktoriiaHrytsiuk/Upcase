@@ -11,7 +11,7 @@ class Act < AbstractXmlElements
   end
 
   def title
-    fetch_element("TITLE").first.text
+    name("TITLE")
   end
 
   def max_speech_each_scene
