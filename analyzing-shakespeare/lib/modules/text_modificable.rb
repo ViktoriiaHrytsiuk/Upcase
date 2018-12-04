@@ -6,7 +6,6 @@ module TextModificable
 
   def scene_title
     "#{scene_object.title} #{longest_line}"
-
   end
 
   def act_title
