@@ -1,5 +1,5 @@
 require 'rexml/document'
-require_relative '../base_request'
+require_relative 'base_request'
 
 class BaseParser
 
