@@ -1,5 +1,5 @@
 require_relative '../modules/elementable'
-require_relative '../macbeth/rexml/act'
+require_relative '../rexml/act'
 
 class MacbethService
   include Elementable

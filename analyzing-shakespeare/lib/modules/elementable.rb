@@ -1,4 +1,4 @@
-require_relative '../macbeth/base_parser'
+require_relative '../base_parser'
 
 module Elementable
   def self.included(base)
