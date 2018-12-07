@@ -1,17 +1,17 @@
 require "sudoku_solver"
 
 describe SudokuSolver do
-  describe ".solve" do
+  describe "#solve" do
     it "solves an easy puzzle" do
       puzzle = open_sudoku_puzzle("easy")
 
-      expect(SudokuSolver.solve(puzzle)).to eq(easy_solution)
+      expect(SudokuSolver.new(puzzle).solve).to eq(easy_solution)
     end
 
     it "solves an hard puzzle" do
       puzzle = open_sudoku_puzzle("hard")
 
-      expect(SudokuSolver.solve(puzzle)).to eq(hard_solution)
+      expect(SudokuSolver.new(puzzle).solve).to eq(hard_solution)
     end
 
     def easy_solution
