@@ -5,13 +5,13 @@ describe SudokuSolver do
     it "solves an easy puzzle" do
       puzzle = open_sudoku_puzzle("easy")
 
-      expect(SudokuSolver.new(puzzle).solve).to eq(easy_solution)
+      expect(SudokuSolver.solve(puzzle)).to eq(easy_solution)
     end
 
     it "solves an hard puzzle" do
       puzzle = open_sudoku_puzzle("hard")
 
-      expect(SudokuSolver.new(puzzle).solve).to eq(hard_solution)
+      expect(SudokuSolver.solve(puzzle)).to eq(hard_solution)
     end
 
     def easy_solution
