@@ -1,5 +1,4 @@
 class Board
-
   def self.board(puzzle_string)
     board = []
     puzzle_string.each_line do |line|
@@ -9,7 +8,7 @@ class Board
     board
   end
 
-  def square(board)
+  def self.square(board)
     box_array = []
     board.each_with_index do |row, row_index|
       if row_index % 3 == 0
