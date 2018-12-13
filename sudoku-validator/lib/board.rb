@@ -8,4 +8,19 @@ class Board
     end
     board
   end
+
+  def square(board)
+    box_array = []
+    board.each_with_index do |row, row_index|
+      if row_index % 3 == 0
+        row.each_with_index do |num, index|
+          if index % 3 == 0
+            squares = board[row_index][index, 3] + board[row_index + 1][index, 3] + board[row_index + 2][index, 3]
+            box_array << squares
+          end
+        end
+      end
+    end
+    box_array
+  end
 end
