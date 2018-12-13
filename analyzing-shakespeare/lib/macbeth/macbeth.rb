@@ -10,7 +10,7 @@ class Macbeth
     macbeth_service_object.speeches.map do |speech|
       speaker_name = speech.speaker
       next if speaker_name == "ALL"
-      result_object.lines_count[speaker_name] = result_object.lines_count[speaker_name].to_i +       speech.line_count
+      result_object.lines_count[speaker_name] = result_object.lines_count[speaker_name].to_i + speech.line_count
     end
     result_object.lines_count
   end
