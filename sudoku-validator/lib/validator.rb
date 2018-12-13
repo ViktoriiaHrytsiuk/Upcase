@@ -1,10 +1,10 @@
-require 'pry'
 require_relative 'modules/board_initialization'
 require_relative 'modules/board_validator'
 
 class Validator
   include BoardValidator
   include BoardInitialization
+
   attr_reader :puzzle_string
 
   def initialize(puzzle_string)
