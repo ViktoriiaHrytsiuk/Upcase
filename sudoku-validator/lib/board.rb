@@ -9,17 +9,16 @@ class Board
   end
 
   def self.square(board)
-    box_array = []
-    board.each_with_index do |row, row_index|
-      if row_index % 3 == 0
-        row.each_with_index do |num, index|
-          if index % 3 == 0
-            squares = board[row_index][index, 3] + board[row_index + 1][index, 3] + board[row_index + 2][index, 3]
-            box_array << squares
-          end
+    first_indexes = [0,3,6]
+    squares = []
+    board.each_with_index do |row, index|
+      if first_indexes.include?(index)
+        first_indexes.inject(squares) do |box, items|
+          box = board[index][items, 3] + board[index + 1][items, 3] + board[index + 2][items, 3]
+          (squares ||= []) << box
         end
       end
     end
-    box_array
+    squares
   end
 end
